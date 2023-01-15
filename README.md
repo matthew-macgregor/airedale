@@ -6,6 +6,9 @@ passwords, but the vault remains something that can be stolen. Airedale takes
 a different approach: generating the password only when you need it. There's
 nothing to store and nothing to be stolen.
 
+**Attention: Airedale is just a toy program currently and the pseudo-random
+number generation is not cryptographically secure.
+
 ### License
 
 Airedale is licensed under the GPLv3.
