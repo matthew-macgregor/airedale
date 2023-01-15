@@ -16,4 +16,4 @@ getpass.o: getpass.c
 	$(CC) $(DEBUG) $(CFLAGS) -c getpass.c
 
 clean:
-	rm -f main.o getpass.o vcppwd.o main
+	rm -f main.o getpass.o vcppwd.o airedale
