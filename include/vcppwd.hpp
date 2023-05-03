@@ -29,7 +29,6 @@
 #include <cstring>
 
 #include <boost/random.hpp>
-#include <boost/program_options.hpp>
 #include <boost/crc.hpp>
 
 namespace vcppwd {

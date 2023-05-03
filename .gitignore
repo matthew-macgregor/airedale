@@ -20,5 +20,6 @@ vcppwd
 
 # temporary tests
 getpass.c
+vendor/*
 
 

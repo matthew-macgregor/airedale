@@ -1,9 +1,22 @@
 {
     "configurations": [
         {
+            "name": "MSVC",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/vendor",
+                "${workspaceFolder}/vendor/boost_1_81_0"
+            ],
+            "defines": [],
+            "macFrameworkPath": []
+        },
+        {
             "name": "Mac",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/vendor"
             ],
             "defines": [],
             "macFrameworkPath": [],
