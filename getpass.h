@@ -47,7 +47,7 @@ extern "C" {
 
 /// definitions
 
-int
+size_t
 gpwd_get_password(char *password, size_t max_password_len);
 
 /// implementation
@@ -71,7 +71,7 @@ gpwd_getch() {
 }
 #endif
 
-int
+size_t
 gpwd_get_password(char *password, size_t max_password_len) {
 #ifdef GETPASS_IS_WINDOWS
     // Windows

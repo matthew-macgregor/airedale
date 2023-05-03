@@ -18,18 +18,22 @@
 */
 
 #include "vcppwd.hpp"
+#include <cstdint>
+#include <cassert>
+
+#define assertm(exp, msg) assert(((void)msg, exp))
 
 using namespace vcppwd;
 
 uint8_t
-rand_range(boost::random::mt19937 &gen, const unsigned char max) {
+rand_range(boost::random::mt19937 &gen, std::uint8_t max) {
     unsigned char rem = 0;
     unsigned char buck = 0;
     unsigned char bytes[4];
 
-	while (true) {
-		std::uint32_t rand = gen();
-        for (u_int8_t i = 0; i < 4; i++) {
+    while (true) {
+        std::uint32_t rand = gen();
+        for (std::uint8_t i = 0; i < 4; i++) {
             // byte1 = (rand>>0) & 0xff;
             // byte2 = (rand>>8) & 0xff;
             // byte3 = (rand>>16) & 0xff;
@@ -47,7 +51,7 @@ rand_range(boost::random::mt19937 &gen, const unsigned char max) {
                 return static_cast<uint8_t>(bytes[i] / buck);
             }
         }
-	}
+    }
 }
 
 std::string_view
@@ -64,20 +68,21 @@ get_special_characters_for_policy(PasswordPolicy policy) {
 }
 
 std::string
-vcppwd::generate_password(int length, std::uint32_t seed, PasswordPolicy policy) {
-    seed = seed xor length;
+vcppwd::generate_password(const int length, std::uint32_t seed, PasswordPolicy policy) {
+    seed = seed ^ length;
     boost::random::mt19937 gen{seed}; // TODO: generic; replace
     std::string_view chosen_chars = get_special_characters_for_policy(policy);
+    const auto len = chosen_chars.length();
+    assertm(len <= 255, "chosen_chars len should not be > 255");
 
     int pos = 0;
-    char bytes[length + 1];
+    auto bytes = std::vector<char>(length);
     for (int i = 0; i < length; i++) {
-        pos = rand_range(gen, chosen_chars.length());
-        bytes[i] = chosen_chars[pos];
+        pos = rand_range(gen, static_cast<std::uint8_t>(chosen_chars.length()));
+        bytes.push_back(chosen_chars[pos]);
     }
-    bytes[length] = '\0';
 
-    return std::string{bytes};
+    return std::string(bytes.begin(), bytes.end());
 }
 
 unsigned int
