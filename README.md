@@ -33,6 +33,21 @@ Airedale is licensed under the GPLv3.
 
 Unzip the boost library to `boost_1_81_0` in the project directory.
 
+Program Options requires a build step. 
+
+On Windows:
+
+```pwsh
+cd .\boost_1_81_0
+.\bootstrap.bat
+.\b2 --build-type=complete msvc --which-program_options
+```
+On macOS / *nix:
+
+TBD
+
+After the build completes, you will find the library in `boost_1_81_0/stage/lib`.
+
 ### Password Policy
 
 - AN00: Alpha numeric characters only.

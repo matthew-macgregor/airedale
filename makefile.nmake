@@ -1,0 +1,27 @@
+TARGET = airedale.exe
+BUILD_DIR = build
+
+CPP = cl
+CXXFLAGS = /nologo /c /std:c++17 /W3 /wd4146 /wd4245 /EHsc /Fo$(BUILD_DIR)\\
+DEBUG = /Z7
+INC = /I boost_1_81_0
+OBJS = $(BUILD_DIR)\vcppwd.obj $(BUILD_DIR)\main.obj
+
+LINK = link
+LINKFLAGS = /nologo
+LIBPATH = /LIBPATH:boost_1_81_0\stage\lib
+LIBS = boost_program_options-vc143-mt-x64-1_81.lib
+
+all: $(BUILD_DIR)\$(TARGET)
+
+$(BUILD_DIR)\main.obj: main.cpp getpass.h
+	$(CPP) $(CXXFLAGS) $(DEBUG) $(INC) main.cpp
+
+$(BUILD_DIR)\vcppwd.obj: vcppwd.cpp vcppwd.hpp
+	$(CPP) $(CXXFLAGS) $(DEBUG) $(INC) vcppwd.cpp
+
+$(BUILD_DIR)\airedale.exe: $(OBJS)
+    $(LINK) $(LINKFLAGS) $(OBJS) $(LIBS) /OUT:$(BUILD_DIR)\$(TARGET) $(LIBPATH)
+
+clean:
+    del build\*
