@@ -107,7 +107,29 @@
         "slist": "cpp",
         "stop_token": "cpp",
         "unistd.h": "c",
-        "windows.h": "c"
+        "windows.h": "c",
+        "xstring": "cpp",
+        "barrier": "cpp",
+        "execution": "cpp",
+        "filesystem": "cpp",
+        "format": "cpp",
+        "syncstream": "cpp",
+        "xfacet": "cpp",
+        "xhash": "cpp",
+        "xiosbase": "cpp",
+        "xlocale": "cpp",
+        "xlocbuf": "cpp",
+        "xlocinfo": "cpp",
+        "xlocmes": "cpp",
+        "xlocmon": "cpp",
+        "xlocnum": "cpp",
+        "xloctime": "cpp",
+        "xmemory": "cpp",
+        "xstddef": "cpp",
+        "xtr1common": "cpp",
+        "xtree": "cpp",
+        "xutility": "cpp"
     },
-    "C_Cpp.dimInactiveRegions": false
+    "C_Cpp.dimInactiveRegions": false,
+    "C_Cpp.errorSquiggles": "disabled"
 }

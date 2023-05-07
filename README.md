@@ -26,13 +26,20 @@ Airedale is licensed under the GPLv3.
     You should have received a copy of the GNU General Public License along 
     with this program (see LICENSE). If not, see <https://www.gnu.org/licenses/>.
 
-### Dependencies
+### Building
 
 - [Boost 1.81.0](https://www.boost.org/users/history/version_1_81_0.html)
+- [Libsodium 1.0.18](https://github.com/jedisct1/libsodium/releases/tag/1.0.18-RELEASE)
 - C++17 compiler.
 
-Unzip the boost library to `boost_1_81_0` in the project directory.
+Unzip the boost library to `boost_1_81_0` in the vendor directory.
 
+Clone libsodium to the vendor folder and follow the build instructions for your
+platform (using Zig is a great option). On Windows, it's also simple to build
+libsodium with Visual Studio.
+
+You can also use a system or vcpkg copy of the dependencies, but you will need to
+modify the makefile accordingly.
 
 ### Password Policy
 

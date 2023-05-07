@@ -8,8 +8,7 @@
                 "${workspaceFolder}/vendor",
                 "${workspaceFolder}/vendor/boost_1_81_0"
             ],
-            "defines": [],
-            "macFrameworkPath": []
+            "defines": []
         },
         {
             "name": "Mac",

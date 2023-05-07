@@ -20,18 +20,20 @@
 #ifndef VCPPWD_HPP
 #define VCPPWD_HPP
 
-#include <iostream>
-#include <ctime>
-#include <cstdint>
+// #include <iostream>
+// #include <ctime>
+// #include <cstdint>
 #include <string>
-#include <iterator>
-#include <exception>
-#include <cstring>
+// #include <iterator>
+// #include <exception>
+// #include <cstring>
 
-#include <boost/random.hpp>
-#include <boost/crc.hpp>
+// #include <boost/random.hpp>
+// #include <boost/crc.hpp>
 
-namespace vcppwd {
+#define assertm(exp, msg) assert(((void)msg, exp))
+
+namespace policy {
     constexpr std::string_view alphanumeric_w_extra_special_chars {
         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%?&^`~*()-_=+[{]}\\|;:'\",<.>/"
     };
@@ -44,10 +46,7 @@ namespace vcppwd {
         AlphaNumericWithSpecialChars_AN02 // AN02
     }; 
 
-    std::string
-    generate_password(int length, std::uint32_t seed, PasswordPolicy policy);
-
-    unsigned int
-    generate_checksum(std::string password, std::string realm);
+    std::string_view
+    get_special_characters_for_policy(PasswordPolicy policy);
 }
 #endif

@@ -3,12 +3,19 @@ BUILD_DIR = build
 
 CPP = cl
 CXXFLAGS = /nologo /c /std:c++17 /W3 /wd4146 /wd4245 /EHsc /Fo$(BUILD_DIR)/
-DEBUG = /Z7
-INC = /I include /I vendor\boost_1_81_0
-OBJS = $(BUILD_DIR)\vcppwd.obj $(BUILD_DIR)\main.obj
+DEBUG = /Z7 /MTd
+INC = /I include /I vendor\boost_1_81_0 /I vendor\libsodium\src\libsodium\include
+OBJS = $(BUILD_DIR)\policy.obj \
+	 $(BUILD_DIR)\main.obj \
+	 $(BUILD_DIR)\crypto.obj \
+	 $(BUILD_DIR)\password.obj \
+	 $(BUILD_DIR)\checksum.obj
 
 LINK = link
 LINKFLAGS = /nologo
+LIBPATH = vendor\libsodium\Build\Debug\x64
+LIBS = libsodium.lib
+LINK_DEBUG = /OPT:NOICF /OPT:NOREF
 
 all: dir $(BUILD_DIR)\$(TARGET)
 
@@ -20,11 +27,20 @@ $(BUILD_DIR):
 $(BUILD_DIR)\main.obj: src/main.cpp include/getpass.h
 	$(CPP) $(CXXFLAGS) $(DEBUG) $(INC) src/main.cpp
 
-$(BUILD_DIR)\vcppwd.obj: src/vcppwd.cpp include/vcppwd.hpp
-	$(CPP) $(CXXFLAGS) $(DEBUG) $(INC) src/vcppwd.cpp
+$(BUILD_DIR)\policy.obj: src/policy.cpp include/policy.hpp
+	$(CPP) $(CXXFLAGS) $(DEBUG) $(INC) src/policy.cpp
+
+$(BUILD_DIR)\crypto.obj: src/crypto.cpp include/crypto.hpp
+	$(CPP) $(CXXFLAGS) $(DEBUG) $(INC) src/crypto.cpp
+
+$(BUILD_DIR)\password.obj: src/providers/password.cpp include/providers/password.hpp
+	$(CPP) $(CXXFLAGS) $(DEBUG) $(INC) src/providers/password.cpp
+
+$(BUILD_DIR)\checksum.obj: src/providers/checksum.cpp include/providers/checksum.hpp
+	$(CPP) $(CXXFLAGS) $(DEBUG) $(INC) src/providers/checksum.cpp
 
 $(BUILD_DIR)\$(TARGET): $(OBJS)
-    $(LINK) $(LINKFLAGS) $(OBJS) /OUT:$(BUILD_DIR)\$(TARGET)
+    $(LINK) $(LINKFLAGS) $(OBJS) $(LIBS) $(LINK_DEBUG)  /LIBPATH:$(LIBPATH) /OUT:$(BUILD_DIR)\$(TARGET)
 
 clean:
-    del build\*
+    del /Q .\build\* vc140.pdb

@@ -27,19 +27,22 @@
 #include <cstdio> // getchar
 
 #include "clipp.h"
-#include "vcppwd.hpp"
+#include "policy.hpp"
+#include "crypto.hpp"
 
 #define GETPASS_IMPL
 #include "getpass.h"
 
-using namespace vcppwd;
+#include "providers/include.hpp"
+
 using namespace clipp;
+using namespace policy;
 
 // c++ -std=c++20 -Iboost_1_81_0 -Wno-deprecated-declarations main.cpp -o main
 int main(int argc, char** argv)
 {
     bool quiet = false, insecure_is_okay = true;
-    int password_length = 42;
+    uint32_t password_length = 42;
     std::string passphrase = "", realm = "", policy = "AN02";
 
     auto cli = (
@@ -54,7 +57,7 @@ int main(int argc, char** argv)
     if (!parse(argc, argv, cli)) {
         std::cout << "Airedale Deterministic Password Generator\n";
         std::cout << "Version v0.0.1\n";
-        std::cout << make_man_page(cli, argv[0]);
+        std::cout << make_man_page(cli, "airedale");
         exit(EXIT_FAILURE);
     }
 
@@ -84,10 +87,14 @@ int main(int argc, char** argv)
         }
     }
 
-    auto checksum = generate_checksum(passphrase, realm);
-    if (!quiet) std::cerr << "Checksum: " << std::hex << checksum << std::dec << '\n';
-    auto passwd = generate_password(password_length, checksum, password_policy);
+    auto u_passphrase = u_string(passphrase.begin(), passphrase.end());
+    mm_random_gen(u_passphrase);
+
+    auto checksum = providers::checksum::generate_crc32_checksum(passphrase + realm);
+    if (!quiet) std::cout << "Checksum: " << std::hex << checksum << std::dec << '\n';
+    auto prov = MT19937Provider{checksum ^ password_length};
+    auto passwd = prov.generate_password(password_length, password_policy);
     std::cout << passwd;
-    if (!quiet) std::cerr << std::endl;
+    if (!quiet) std::cout << std::endl;
     return EXIT_SUCCESS;
 }
