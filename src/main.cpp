@@ -17,6 +17,7 @@
     with Airedale. If not, see <https://www.gnu.org/licenses/>. 
 */
 
+
 #include <iostream>
 #include <ctime>
 #include <cstdint>
@@ -28,12 +29,11 @@
 
 #include "clipp.h"
 #include "policy.hpp"
-#include "crypto.hpp"
+#include "providers/include.hpp"
+#include "color.hpp"
 
 #define GETPASS_IMPL
 #include "getpass.h"
-
-#include "providers/include.hpp"
 
 using namespace clipp;
 using namespace policy;
@@ -41,13 +41,13 @@ using namespace policy;
 // c++ -std=c++20 -Iboost_1_81_0 -Wno-deprecated-declarations main.cpp -o main
 int main(int argc, char** argv)
 {
-    bool quiet = false, insecure_is_okay = true;
+    bool quiet = false, use_mt19937 = false;
     uint32_t password_length = 42;
     std::string passphrase = "", realm = "", policy = "AN02";
 
     auto cli = (
-        required("-i", "--insecure").set(insecure_is_okay).doc("allow insecure PRNG (mt19937)"),
         required("-r", "--realm") & value("realm identifier", realm),
+        option("-i", "--insecure").set(use_mt19937).doc("allow insecure PRNG (mt19937)"),
         option("-p", "--passphrase", "--password") & value("primary passphrase", passphrase),
         option("-q", "--quiet").set(quiet).doc("quiet/script mode"),
         option("--policy") & value("password policy (AN00|AN01|AN02)", policy),
@@ -55,8 +55,8 @@ int main(int argc, char** argv)
     );
 
     if (!parse(argc, argv, cli)) {
-        std::cout << "Airedale Deterministic Password Generator\n";
-        std::cout << "Version v0.0.1\n";
+        std::cout << dye::aqua("Airedale Deterministic Password Generator\n");
+        std::cout << dye::grey("Version v0.0.1\n");
         std::cout << make_man_page(cli, "airedale");
         exit(EXIT_FAILURE);
     }
@@ -87,14 +87,23 @@ int main(int argc, char** argv)
         }
     }
 
-    auto u_passphrase = u_string(passphrase.begin(), passphrase.end());
-    mm_random_gen(u_passphrase);
+    auto prng_name = use_mt19937 ? "mt19937" : "chacha20";
+    auto checksum = providers::checksum::generate_crc32(passphrase + realm + policy + std::to_string(password_length) + prng_name);
+    if (!quiet) std::cout << dye::grey("Checksum: ") << std::hex << dye::yellow(checksum) << std::dec << '\n';
 
-    auto checksum = providers::checksum::generate_crc32_checksum(passphrase + realm);
-    if (!quiet) std::cout << "Checksum: " << std::hex << checksum << std::dec << '\n';
-    auto prov = MT19937Provider{checksum ^ password_length};
-    auto passwd = prov.generate_password(password_length, password_policy);
-    std::cout << passwd;
-    if (!quiet) std::cout << std::endl;
+    if (use_mt19937) {
+        auto prov = MT19937Provider{passphrase + realm, password_length};
+        auto passwd = prov.generate_password(password_length, password_policy);
+        if (!quiet) std::cout << dye::grey("Password: ");
+        std::cout << dye::aqua(passwd);
+        if (!quiet) std::cout << std::endl;
+    } else {
+        auto prov = ChaCha20Provider{passphrase + realm};
+        auto passwd = prov.generate_password(password_length, password_policy);
+        if (!quiet) std::cout << dye::grey("Password: ");
+        std::cout << dye::aqua(passwd);
+        if (!quiet) std::cout << std::endl;
+    }
+
     return EXIT_SUCCESS;
 }

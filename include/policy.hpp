@@ -20,18 +20,7 @@
 #ifndef VCPPWD_HPP
 #define VCPPWD_HPP
 
-// #include <iostream>
-// #include <ctime>
-// #include <cstdint>
 #include <string>
-// #include <iterator>
-// #include <exception>
-// #include <cstring>
-
-// #include <boost/random.hpp>
-// #include <boost/crc.hpp>
-
-#define assertm(exp, msg) assert(((void)msg, exp))
 
 namespace policy {
     constexpr std::string_view alphanumeric_w_extra_special_chars {
@@ -49,4 +38,5 @@ namespace policy {
     std::string_view
     get_special_characters_for_policy(PasswordPolicy policy);
 }
-#endif
+
+#endif // VCPPWD_HPP
