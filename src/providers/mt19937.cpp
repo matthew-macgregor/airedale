@@ -1,3 +1,4 @@
+#include <cassert>
 #include "providers/password.hpp"
 #include "providers/checksum.hpp"
 #include "providers/mt19937.hpp"

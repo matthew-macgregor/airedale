@@ -1,22 +1,54 @@
+TARGET = airedale
+BUILD_DIR = build
 DEBUG = -g
 CPP = g++
-CXXFLAGS = -Wall -Wextra -O -std=c++17 -Ivendor/boost_1_81_0 -Iinclude -Wno-deprecated-declarations
-CFLAGS = -Wall -Wextra -O -std=c11
+CXXFLAGS = -Wall -Wextra -Werror -O -std=c++17 -static
+CFLAGS = -Wall -Wextra -O -std=c11 -static
+
 BUILD_DIR = build
 SRC_DIR = src
+SRC_PROVIDERS_DIR = src/providers
+INC_PROVIDERS_DIR = include/providers
 INC_DIR = include
+INCLUDE = -I$(INC_DIR) -Ivendor/boost_1_81_0 -I vendor/libsodium/src/libsodium/include -Wno-deprecated-declarations
 
-$(BUILD_DIR)/airedale: $(BUILD_DIR)/vcppwd.o $(BUILD_DIR)/main.o
-	$(CPP) $(DEBUG) $(CXXFLAGS) -o airedale $(BUILD_DIR)/vcppwd.o $(BUILD_DIR)/main.o
+OBJS = $(BUILD_DIR)/policy.o \
+	 $(BUILD_DIR)/main.o \
+	 $(BUILD_DIR)/chacha20.o \
+	 $(BUILD_DIR)/mt19937.o \
+	 $(BUILD_DIR)/checksum.o \
+	 $(BUILD_DIR)/util.o
 
-main.o: $(SRC_DIR)/main.cpp $(INC_DIR)/getpass.h
-	$(CPP) $(DEBUG) $(CXXFLAGS) -c $(SRC_DIR)/main.cpp
+LIBS = -lsodium
+LIBPATH = -Lvendor/libsodium/src/libsodium/.libs
 
-vcppwd.o: $(SRC_DIR)/vcppwd.cpp $(INC_DIR)/vcppwd.hpp
-	$(CPP) $(DEBUG) $(CXXFLAGS) -c $(SRC_DIR)/vcppwd.cpp
+all: dir $(BUILD_DIR)/$(TARGET)
 
-getpass.o: $(SRC_DIR)/getpass.c
-	$(CC) $(DEBUG) $(CFLAGS) -c $(SRC_DIR)/getpass.c
+dir: $(BUILD_DIR)
+
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
+
+$(BUILD_DIR)/$(TARGET): $(OBJS)
+	$(CPP) -o $(BUILD_DIR)/$(TARGET) $(OBJS) $(CXXFLAGS) $(INCLUDE) $(DEBUG) $(LIBPATH) $(LIBS)
+
+$(BUILD_DIR)/main.o: $(SRC_DIR)/main.cpp $(INC_DIR)/getpass.h $(INC_DIR)/util.hpp $(INC_DIR)/providers/include.hpp
+	$(CPP) $(CXXFLAGS) $(DEBUG) $(INCLUDE) -c $(SRC_DIR)/main.cpp -o $(BUILD_DIR)/main.o
+
+$(BUILD_DIR)/policy.o: $(SRC_DIR)/policy.cpp $(INC_DIR)/policy.hpp
+	$(CPP) $(CXXFLAGS) $(DEBUG) $(INCLUDE) -c $(SRC_DIR)/policy.cpp -o $(BUILD_DIR)/policy.o
+
+$(BUILD_DIR)/chacha20.o: $(SRC_PROVIDERS_DIR)/chacha20.cpp $(INC_PROVIDERS_DIR)/chacha20.hpp
+	$(CPP) $(CXXFLAGS) $(DEBUG) $(INCLUDE) -c $(SRC_PROVIDERS_DIR)/chacha20.cpp -o $(BUILD_DIR)/chacha20.o
+
+$(BUILD_DIR)/mt19937.o: $(SRC_PROVIDERS_DIR)/mt19937.cpp $(INC_PROVIDERS_DIR)/mt19937.hpp
+	$(CPP) $(CXXFLAGS) $(DEBUG) $(INCLUDE) -c $(SRC_PROVIDERS_DIR)/mt19937.cpp -o $(BUILD_DIR)/mt19937.o
+
+$(BUILD_DIR)/util.o: $(SRC_DIR)/util.cpp $(INC_DIR)/util.hpp
+	$(CPP) $(CXXFLAGS) $(DEBUG) $(INCLUDE) -c $(SRC_DIR)/util.cpp -o $(BUILD_DIR)/util.o
+
+$(BUILD_DIR)/checksum.o: $(SRC_PROVIDERS_DIR)/checksum.cpp $(INC_PROVIDERS_DIR)/checksum.hpp
+	$(CPP) $(CXXFLAGS) $(DEBUG) $(INCLUDE) -c $(SRC_PROVIDERS_DIR)/checksum.cpp -o $(BUILD_DIR)/checksum.o
 
 clean:
-	rm -f $(BUILD_DIR)/main.o $(BUILD_DIR)/vcppwd.o $(BUILD_DIR)/airedale
+	rm -f $(BUILD_DIR)/*

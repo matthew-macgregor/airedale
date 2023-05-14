@@ -1,6 +1,5 @@
 #include <cstdint>
 #include <random>
-#include <boost/random.hpp>
 
 #include "policy.hpp"
 
