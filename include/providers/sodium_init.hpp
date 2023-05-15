@@ -17,9 +17,7 @@ public:
     }
 
 private:
-    static bool is_sodium_initialized;
+    inline static bool is_sodium_initialized = false;
 };
-
-bool SodiumInit::is_sodium_initialized = false;
 
 #endif // include guard

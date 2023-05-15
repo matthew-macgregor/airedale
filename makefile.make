@@ -32,7 +32,7 @@ $(BUILD_DIR):
 $(BUILD_DIR)/$(TARGET): $(OBJS)
 	$(CPP) -o $(BUILD_DIR)/$(TARGET) $(OBJS) $(CXXFLAGS) $(INCLUDE) $(DEBUG) $(LIBPATH) $(LIBS)
 
-$(BUILD_DIR)/main.o: $(SRC_DIR)/main.cpp $(INC_DIR)/getpass.h $(INC_DIR)/util.hpp $(INC_DIR)/providers/include.hpp
+$(BUILD_DIR)/main.o: $(SRC_DIR)/main.cpp $(INC_DIR)/getpass.h $(INC_DIR)/util.hpp $(INC_DIR)/providers/include.hpp $(INC_PROVIDERS_DIR)/sodium_init.hpp
 	$(CPP) $(CXXFLAGS) $(DEBUG) $(INCLUDE) -c $(SRC_DIR)/main.cpp -o $(BUILD_DIR)/main.o
 
 $(BUILD_DIR)/policy.o: $(SRC_DIR)/policy.cpp $(INC_DIR)/policy.hpp

@@ -39,7 +39,8 @@ using namespace clipp;
 using namespace policy;
 using namespace boost::algorithm;
 
-// c++ -std=c++20 -Iboost_1_81_0 -Wno-deprecated-declarations main.cpp -o main
+const char VERSION[] = "v0.1.0";
+
 int main(int argc, char** argv)
 {
     bool quiet = false, use_mt19937 = false;
@@ -57,7 +58,7 @@ int main(int argc, char** argv)
 
     if (!parse(argc, argv, cli)) {
         std::cout << "Airedale Deterministic Password Generator\n";
-        std::cout << "Version v0.0.1\n";
+        std::cout << "Version " << VERSION << '\n';
         std::cout << make_man_page(cli, "airedale");
         exit(EXIT_FAILURE);
     }
