@@ -6,8 +6,8 @@ passwords, but the vault remains something that can be stolen. Airedale takes
 a different approach: generating the password only when you need it. There's
 nothing to store and nothing to be stolen.
 
-**Attention: Airedale is just a toy program currently and the pseudo-random
-number generation is not cryptographically secure.
+**Attention: Airedale is a personal project. I make no guarantees about its
+suitability for any purpose or about its stability.**
 
 ### License
 
@@ -34,9 +34,9 @@ Airedale is licensed under the GPLv3.
 
 Unzip the boost library to `boost_1_81_0` in the vendor directory.
 
-Clone libsodium to the vendor folder and follow the build instructions for your
-platform (using Zig is a great option). On Windows, it's also simple to build
-libsodium with Visual Studio.
+Download a source release of libsodium to the vendor folder and follow the build 
+instructions for your platform (using Zig is a great option). On Windows, it's also
+simple to build libsodium with Visual Studio.
 
 You can also use a system or vcpkg copy of the dependencies, but you will need to
 modify the makefile accordingly.
@@ -50,32 +50,40 @@ modify the makefile accordingly.
 ### Unix/Linux Build
 
 ```sh
-make
+make -f makefile.make
+```
+
+### MSVC Build
+
+```ps1
+nmake /f makefile.nmake
 ```
 
 Known to build successfully with the following compilers:
 
 - Apple clang version 14.0.0 (clang-1400.0.29.202) / macOS 12.6.1
-- ...
+- gcc version 11.3.0 (Ubuntu 11.3.0-1ubuntu1~22.04) / WSL Ubuntu 22.04
+- MSVC Microsoft (R) C/C++ Optimizing Compiler Version 19.35.32217.1 for x64 / Windows 11
 
 ### Is Airedale Cryptographically Secure?
 
-USE AIREDALE AT YOUR OWN RISK, see [LICENSE](./LICENSE) for details.
+USE AIREDALE AT YOUR OWN RISK, see [LICENSE](./LICENSE) for details. This command line utility
+is not intended for use as a password generator for production systems. This is a personal project
+and the code base has not been audited for security.
 
-Assume that it is not. The initial proof of concept implementation uses 
-`mt19937` and a CRC32 checksum, neither of which are secure. I've required the
-`--insecure` flag on the command line to call this out.
+The default for password generation uses BLAKE2b from the libsodium cryptographic library.
 
-Future plans include switching to a CSPRNG to resolve this issue.
+MersienneTwister `mt19937` is provided as a baseline implementation that is easily portable 
+to just about any language or platform. The mt implementation is behind a `--insecure|-i` flag.
 
-There is an argument that given the fact that passwords *should* be hashed on
-the diverse destination systems that there's a low risk of leaking enough bytes
-to form a sample (for Mersenne Twister that sample size is 623, should anyone
-even be looking).
+> Are you a paleontologist? I desperately need a paleontologist.
+
+If cryptography is your strong suit and you're interested in making the project more useful, let
+me know.
 
 ### TODO
-- Implement a CSPRNG.
 - Tests.
+- Color console output.
 
 ### Similar projects:
 
