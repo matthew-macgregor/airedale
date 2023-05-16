@@ -92,11 +92,11 @@ int main(int argc, char** argv)
     }
 
     auto prng_name = use_mt19937 ? "mt19937" : "chacha20";
-    auto checksum = providers::checksum::generate_crc32(passphrase + realm + policy + std::to_string(password_length) + prng_name);
+    auto checksum = providers::checksum::generate_crc32(passphrase + realm + policy + prng_name + std::to_string(password_length));
     if (!quiet) std::cout << "Checksum: " << std::hex << checksum << std::dec << '\n';
 
     if (use_mt19937) {
-        auto prov = MT19937Provider{passphrase + realm, password_length};
+        auto prov = MT19937Provider{passphrase + realm, checksum};
         auto passwd = prov.generate_password(password_length, password_policy);
         if (!quiet) std::cout << "Password: ";
         std::cout << passwd;
