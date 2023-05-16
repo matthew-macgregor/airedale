@@ -9,6 +9,7 @@
 #include <iostream>
 #include <limits>
 #include <algorithm>
+#include <memory>
 #include <boost/random/uniform_smallint.hpp>
 
 #include "providers/password.hpp"
@@ -26,6 +27,7 @@ static const unsigned char nonce[crypto_stream_chacha20_ietf_NONCEBYTES] = { // 
 class CryptoStreamChaCha20Generator {
 public:
     CryptoStreamChaCha20Generator(std::string initializer): initializer {initializer} {}
+    ~CryptoStreamChaCha20Generator() {}
 
     using result_type = uint8_t;
     result_type extract() {
@@ -58,7 +60,7 @@ private:
 void ChaCha20Provider::init() {}
 
 std::string ChaCha20Provider::generate_password(const int length, policy::PasswordPolicy policy) {
-    CryptoStreamChaCha20Generator generator{initializer};
+    auto generator_ptr = std::make_unique<CryptoStreamChaCha20Generator>(initializer);
     std::string_view chosen_chars = policy::get_special_characters_for_policy(policy);
     const auto chosen_chars_length = chosen_chars.length();
     assertm(chosen_chars_length <= 255, "chosen_chars len should not be > 255");
@@ -69,7 +71,7 @@ std::string ChaCha20Provider::generate_password(const int length, policy::Passwo
     size_t pos = 0;
     auto bytes = std::vector<char>();
     for (int i = 0; i < length; i++) {
-        pos = distr(generator);
+        pos = distr(*generator_ptr.get());
         auto b = chosen_chars[pos];
         bytes.push_back(b);
     }
