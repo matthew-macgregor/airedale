@@ -1,10 +1,16 @@
 TARGET = airedale.exe
 BUILD_DIR = build
-
+DEBUG = /Z7 /MTd
 CPP = cl
 CXXFLAGS = /nologo /c /std:c++17 /W3 /wd4146 /wd4245 /EHsc /Fo$(BUILD_DIR)/
-DEBUG = /Z7 /MTd
+CFLAGS = 
+
+SRC_DIR=src
+SRC_PROVIDERS_DIR=src\providers
+INC_PROVIDERS_DIR=include\providers
+INC_DIR=include
 INC = /I include /I vendor\boost_1_81_0 /I vendor\libsodium\src\libsodium\include
+
 OBJS = $(BUILD_DIR)\policy.obj \
 	 $(BUILD_DIR)\main.obj \
 	 $(BUILD_DIR)\chacha20.obj \
@@ -12,15 +18,11 @@ OBJS = $(BUILD_DIR)\policy.obj \
 	 $(BUILD_DIR)\checksum.obj \
 	 $(BUILD_DIR)\util.obj
 
-SRC_DIR=src
-SRC_PROVIDERS_DIR=src\providers
-INC_PROVIDERS_DIR=include\providers
-INC_DIR=include
+LIBS = libsodium.lib
+LIBPATH = vendor\libsodium\Build\Debug\x64
 
 LINK = link
 LINKFLAGS = /nologo
-LIBPATH = vendor\libsodium\Build\Debug\x64
-LIBS = libsodium.lib
 LINK_DEBUG = /OPT:NOICF /OPT:NOREF
 
 all: dir $(BUILD_DIR)\$(TARGET)
@@ -30,10 +32,16 @@ dir: $(BUILD_DIR)
 $(BUILD_DIR):
 	if not exist $(BUILD_DIR) mkdir $(BUILD_DIR)
 
-$(BUILD_DIR)\main.obj: src\main.cpp include\getpass.h include\util.hpp include\providers\include.hpp
+clean:
+    del /Q .\build\* vc140.pdb
+
+$(BUILD_DIR)\$(TARGET): $(OBJS)
+    $(LINK) $(LINKFLAGS) $(OBJS) $(LIBS) $(LINK_DEBUG) /LIBPATH:$(LIBPATH) /OUT:$(BUILD_DIR)\$(TARGET)
+
+$(BUILD_DIR)\main.obj: src\main.cpp $(INC_DIR)\getpass.h $(INC_DIR)\util.hpp $(INC_PROVIDERS_DIR)\include.hpp $(INC_PROVIDERS_DIR)\sodium_init.hpp
 	$(CPP) $(CXXFLAGS) $(DEBUG) $(INC) src\main.cpp
 
-$(BUILD_DIR)\policy.obj: src\policy.cpp include\policy.hpp
+$(BUILD_DIR)\policy.obj: src\policy.cpp $(INC_DIR)\policy.hpp
 	$(CPP) $(CXXFLAGS) $(DEBUG) $(INC) src\policy.cpp
 
 $(BUILD_DIR)\chacha20.obj: $(SRC_PROVIDERS_DIR)\chacha20.cpp $(INC_PROVIDERS_DIR)\chacha20.hpp
@@ -45,14 +53,7 @@ $(BUILD_DIR)\mt19937.obj: $(SRC_PROVIDERS_DIR)\mt19937.cpp $(INC_PROVIDERS_DIR)\
 $(BUILD_DIR)\util.obj: $(SRC_DIR)\util.cpp $(INC_DIR)\util.hpp
 	$(CPP) $(CXXFLAGS) $(DEBUG) $(INC) $(SRC_DIR)\util.cpp
 
-# $(BUILD_DIR)\password.obj: $(SRC_PROVIDERS_DIR)\password.cpp $(INC_PROVIDERS_DIR)\password.hpp
-# 	$(CPP) $(CXXFLAGS) $(DEBUG) $(INC) $(SRC_PROVIDERS_DIR)\password.cpp
 
 $(BUILD_DIR)\checksum.obj: $(SRC_PROVIDERS_DIR)\checksum.cpp $(INC_PROVIDERS_DIR)\checksum.hpp
 	$(CPP) $(CXXFLAGS) $(DEBUG) $(INC) $(SRC_PROVIDERS_DIR)\checksum.cpp
 
-$(BUILD_DIR)\$(TARGET): $(OBJS)
-    $(LINK) $(LINKFLAGS) $(OBJS) $(LIBS) $(LINK_DEBUG) /LIBPATH:$(LIBPATH) /OUT:$(BUILD_DIR)\$(TARGET)
-
-clean:
-    del /Q .\build\* vc140.pdb

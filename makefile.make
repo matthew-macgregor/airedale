@@ -5,7 +5,6 @@ CPP = g++
 CXXFLAGS = -Wall -Wextra -Werror -O -std=c++17 -static
 CFLAGS = -Wall -Wextra -O -std=c11 -static
 
-BUILD_DIR = build
 SRC_DIR = src
 SRC_PROVIDERS_DIR = src/providers
 INC_PROVIDERS_DIR = include/providers
@@ -25,6 +24,9 @@ LIBPATH = -Lvendor/libsodium/src/libsodium/.libs
 all: dir $(BUILD_DIR)/$(TARGET)
 
 dir: $(BUILD_DIR)
+
+clean:
+	rm -f $(BUILD_DIR)/*
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
@@ -50,5 +52,3 @@ $(BUILD_DIR)/util.o: $(SRC_DIR)/util.cpp $(INC_DIR)/util.hpp
 $(BUILD_DIR)/checksum.o: $(SRC_PROVIDERS_DIR)/checksum.cpp $(INC_PROVIDERS_DIR)/checksum.hpp
 	$(CPP) $(CXXFLAGS) $(DEBUG) $(INCLUDE) -c $(SRC_PROVIDERS_DIR)/checksum.cpp -o $(BUILD_DIR)/checksum.o
 
-clean:
-	rm -f $(BUILD_DIR)/*
