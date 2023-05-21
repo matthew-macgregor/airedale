@@ -1,6 +1,5 @@
 #include <string>
 #include <boost/crc.hpp>
-#define SODIUM_STATIC
 #include <sodium.h>
 #include "providers/checksum.hpp"
 #include "util.hpp"

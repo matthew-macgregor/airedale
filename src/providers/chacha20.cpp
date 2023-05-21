@@ -1,4 +1,3 @@
-#define SODIUM_STATIC
 #include <sodium.h>
 #include <string>
 #include <cstring>

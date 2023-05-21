@@ -1,4 +1,3 @@
-#define SODIUM_STATIC
 #include <sodium.h>
 
 #ifndef PROVIDERS_SODIUM_INIT_HPP
