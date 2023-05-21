@@ -30,16 +30,27 @@ Airedale is licensed under the GPLv3.
 
 - [Boost 1.81.0](https://www.boost.org/users/history/version_1_81_0.html)
 - [Libsodium 1.0.18](https://github.com/jedisct1/libsodium/releases/tag/1.0.18-RELEASE)
-- C++17 compiler.
+- C++20 compiler
+- [vcpkg](https://vcpkg.io/en/)
 
-Unzip the boost library to `boost_1_81_0` in the vendor directory.
 
-Download a source release of libsodium to the vendor folder and follow the build 
-instructions for your platform (using Zig is a great option). On Windows, it's also
-simple to build libsodium with Visual Studio.
+#### Windows
 
-You can also use a system or vcpkg copy of the dependencies, but you will need to
-modify the makefile accordingly.
+Use vcpkg to install dependencies:
+
+```sh
+# Example for Windows
+vcpkg install --triplet x64-windows-static boost-crc boost-random boost-algorithm libsodium
+```
+
+Set `VCPKG_ROOT` environment variable.
+
+Build using CMake:
+
+```sh
+cmake -S . -B build --preset windows-debug
+cmake --build build
+```
 
 ### Password Policy
 

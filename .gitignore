@@ -22,5 +22,6 @@ vcppwd
 getpass.c
 vendor/*
 build/
+out/
 
 
