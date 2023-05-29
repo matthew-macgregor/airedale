@@ -17,8 +17,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
     target_compile_options(airedale PUBLIC /MT)
     target_link_options(airedale PUBLIC /INCREMENTAL:NO /NODEFAULTLIB:MSVCRT /NODEFAULTLIB:libcmtd.lib)
-else()
-    target_link_libraries(airedale -static)
 endif()
 
 target_include_directories(airedale PUBLIC ../include)

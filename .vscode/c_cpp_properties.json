@@ -16,8 +16,7 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/include",
-                "${workspaceFolder}/vendor"
+                "${workspaceFolder}/include"
             ],
             "defines": [],
             "macFrameworkPath": [],
