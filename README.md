@@ -34,7 +34,7 @@ Airedale is licensed under the GPLv3.
 - [vcpkg](https://vcpkg.io/en/)
 
 
-#### Windows
+#### CMake + vcpkg
 
 Use vcpkg to install dependencies:
 
@@ -42,15 +42,23 @@ Use vcpkg to install dependencies:
 # Windows
 vcpkg install --triplet x64-windows-static boost-crc boost-random boost-algorithm libsodium
 
-# macOS
-vcpkg install --tripley x64-osx boost-crc boost-random boost-algorithm libsodium
+# macOS 
+vcpkg install --triplet x64-osx boost-crc boost-random boost-algorithm libsodium
+
+# FreeBSD
+vcpkg install --triplet x64-freebsd boost-crc boost-random boost-algorithm libsodium
 ```
 
 Set `VCPKG_ROOT` environment variable.
 
 ```sh
-# *nix
-export VCPKG_ROOT=/Users/matsu/Code/repos/vcpkg
+# Be sure to change the path to the directory where you cloned vcpkg.
+
+# bash
+export VCPKG_ROOT="$HOME/Code/repos/vcpkg"
+
+# tcsh (BSD)
+setenv VCPKG_ROOT "$HOME/Code/repos/vcpkg"
 ```
 
 Build using CMake:
@@ -58,6 +66,7 @@ Build using CMake:
 CMake presets that are defined:
 - `windows-debug`
 - `osx-debug`
+- `freebsd-debug`
 
 ```sh
 cmake -S . -B build --preset {preset}

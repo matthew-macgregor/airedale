@@ -1,7 +1,7 @@
 TARGET = airedale
 BUILD_DIR = build
 DEBUG = -g
-CPP = g++
+CPP = c++
 CXXFLAGS = -Wall -Wextra -Werror -O -std=c++17 -static
 CFLAGS = -Wall -Wextra -O -std=c11 -static
 
