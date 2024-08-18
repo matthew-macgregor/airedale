@@ -28,13 +28,31 @@ Airedale is licensed under the GPLv3.
 
 ### Building
 
+#### Linux (Debian/Ubuntu/Linux Mint)
+
+Airdale builds using system packages on Debian-based distros (tested on Linux Mint 21.3/Ubuntu 22.04). The following versions are known to work:
+
+- Boost Random 1.7.4
+- Sodium 1.0.18
+
+Install dependencies:
+
+```shell
+sudo apt-get install libboost-random-dev libsodium-dev build-essential
+```
+
+Use the makefile to build:
+
+```shell
+make -f makefile.make
+```
+
+#### CMake + vcpkg
+
 - [Boost 1.81.0](https://www.boost.org/users/history/version_1_81_0.html)
 - [Libsodium 1.0.18](https://github.com/jedisct1/libsodium/releases/tag/1.0.18-RELEASE)
 - C++20 compiler
 - [vcpkg](https://vcpkg.io/en/)
-
-
-#### CMake + vcpkg
 
 Use vcpkg to install dependencies:
 

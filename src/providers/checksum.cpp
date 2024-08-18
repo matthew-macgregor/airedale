@@ -1,4 +1,5 @@
 #include <string>
+#include <cstring>
 #include <boost/crc.hpp>
 #include <sodium.h>
 #include "providers/checksum.hpp"

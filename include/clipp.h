@@ -176,23 +176,17 @@ namespace traits {
  * @brief function (class) signature type trait
  *
  *****************************************************************************/
-template <class Fn, class... Args>
-struct invoke_result {
-#if defined(__cpp_lib_is_invocable)
-#if !defined(_MSC_VER)
-    using type = typename std::invoke_result<Fn, Args...>::type; // First available in c++17.
-#endif	
-#else
-    using type = typename std::result_of<Fn(Args...)>::type; // Deprecated in c++17; removed in c++20.
-#endif
-};
-
 template<class Fn, class Ret, class... Args>
 constexpr auto
 check_is_callable(int) -> decltype(
     std::declval<Fn>()(std::declval<Args>()...),
+#if defined(__cpp_lib_is_invocable)
     std::integral_constant<bool,
-        std::is_same<Ret,typename invoke_result<Fn,Args...>::type>::value>{} );
+        std::is_same<Ret,typename std::invoke_result<Fn,Args...>::type>::value>{} );
+#else
+    std::integral_constant<bool,
+        std::is_same<Ret,typename std::result_of<Fn(Args...)>::type>::value>{} );
+#endif
 
 template<class,class,class...>
 constexpr auto
@@ -202,8 +196,13 @@ template<class Fn, class Ret>
 constexpr auto
 check_is_callable_without_arg(int) -> decltype(
     std::declval<Fn>()(),
+#if defined(__cpp_lib_is_invocable)
     std::integral_constant<bool,
-        std::is_same<Ret,typename invoke_result<Fn>::type>::value>{} );
+        std::is_same<Ret,typename std::invoke_result<Fn>::type>::value>{} );
+#else
+    std::integral_constant<bool,
+        std::is_same<Ret,typename std::result_of<Fn>::type>::value>{} );
+#endif
 
 template<class,class>
 constexpr auto
@@ -1437,9 +1436,7 @@ public:
     //---------------------------------------------------------------
     /** @brief executes all argument actions */
     void execute_actions(const arg_string& arg) const {
-        int i = 0;
         for(const auto& a : argActions_) {
-            ++i;
             a(arg.c_str());
         }
     }
